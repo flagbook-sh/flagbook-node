@@ -22,4 +22,14 @@ yarn add @flagbook/flagbook-node
 
 ## Usage
 
-todo
+Basic usage of global flag
+
+```js
+const { Flagbook } = require('@flagbook/flagbook-node')
+
+Flagbook.init({
+  accessToken: 'XXX'
+})
+
+await Flagbook.getFlagValue('user_edit_v2_enabled') // true
+```
