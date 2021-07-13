@@ -1,10 +1,11 @@
 {
   "name": "@flagbook/flagbook-node",
+  "description": "The Flagbook Node.js SDK provides convenient access to Flagbook API from application written in Node.js.",
   "author": {
     "name": "Flagbook",
     "url": "https://flagbook.sh/"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -13,6 +14,10 @@
   ],
   "engines": {
     "node": ">=10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flagbook-sh/flagbook-node.git"
   },
   "scripts": {
     "build": "tsc",

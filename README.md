@@ -1,8 +1,8 @@
-# Flagbook Javascript/Node.js SDK
+# Flagbook Node.js SDK
 
 ![Build](https://github.com/flagbook-sh/flagbook-node/workflows/Build/badge.svg?branch=master)
 
-The Flagbook Javascript/Node.js SDK provides convenient access to Flagbook API from application written in client-side Javascript and server-side Node.js.
+The Flagbook Node.js SDK provides convenient access to Flagbook API from application written in Node.js.
 
 ## Requirements
 
