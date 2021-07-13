@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "outDir": "./dist/",
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "module": "commonjs",
+    "lib": ["ES2015", "dom"],
+    "removeComments": false,
+    "alwaysStrict": true,
+    "allowUnreachableCode": false,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": false,
+    "strictPropertyInitialization": false,
+    "noUnusedLocals": false
+  },
+  "include": ["src"]
+}
