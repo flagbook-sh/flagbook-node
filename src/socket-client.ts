@@ -56,7 +56,9 @@ export class SocketClient {
 
   onClose = async () => {
     this.interval = null;
-    await new Promise((r) => setTimeout(r, this.config.retryInterval));
+    await new Promise((r) =>
+      setTimeout(() => r(true), this.config.retryInterval)
+    );
     this.connect();
   };
 

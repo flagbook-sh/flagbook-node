@@ -91,7 +91,7 @@ export class FlagbookClient {
     const [_, response] = queueItem;
 
     if (!response) {
-      await new Promise((r) => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(() => r(true), 10));
       return this.waitForResponse(request);
     }
 
