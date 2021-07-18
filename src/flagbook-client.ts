@@ -2,20 +2,24 @@ import { CacheManager } from "./cache-manager";
 import { SocketClient } from "./socket-client";
 
 export interface Config {
-  accessToken?: string;
+  accessToken: string;
   cacheTTL: number;
   cacheEnabled: boolean;
+  timeout: number;
 }
 
-type Tags = [];
+type TagKey = string;
+type TagValue = string | number | undefined | null | boolean;
 
-type QueueItemRequest = ["get_flag_value", string, Tags];
+export type Tag = [TagKey, TagValue];
+
+type QueueItemRequest = ["get_flag_value", string, Tag[]];
 type QueueItemResponse = ["ok", boolean] | ["error", string];
 
 type QueueItem = [QueueItemRequest, QueueItemResponse | undefined];
 
 type GetFlagValueResponseMsg = [
-  ["get_flag_value", string, Tags],
+  ["get_flag_value", string, Tag[]],
   ["ok", boolean] | ["error", string]
 ];
 
@@ -23,8 +27,10 @@ export class FlagbookClient {
   private socketClient: SocketClient;
   private queue: QueueItem[] = [];
   private config: Config = {
+    accessToken: "empty",
     cacheTTL: 10_000,
     cacheEnabled: true,
+    timeout: 5_000,
   };
   private cacheManager: CacheManager;
 
@@ -48,27 +54,27 @@ export class FlagbookClient {
     }
   }
 
-  public async getFlagValue(name: string): Promise<boolean> {
-    if (!this.config.accessToken) {
+  public async getFlagValue(name: string, tags: Tag[] = []): Promise<boolean> {
+    if (!this.config.accessToken || this.config.accessToken === "empty") {
       throw new Error(`Cannot read flag, reason: access token not provided`);
     }
 
     if (this.config.cacheEnabled) {
-      const cachedValue = this.cacheManager.get([name, []].toString());
+      const cachedValue = this.cacheManager.get([name, tags].toString());
       if (cachedValue !== undefined) {
         return cachedValue;
       }
     }
 
-    const request: QueueItemRequest = ["get_flag_value", name, []];
+    const request: QueueItemRequest = ["get_flag_value", name, tags];
     this.enqueueRequest(request);
     const resultPromise = this.waitForResponse(request);
-    this.socketClient.send(["get_flag_value", name, []]);
+    this.socketClient.send(["get_flag_value", name, tags]);
     const result = await resultPromise;
 
     if (result && result[0] === "ok") {
       if (this.config.cacheEnabled) {
-        this.cacheManager.add([name, []].toString(), result[1]);
+        this.cacheManager.add([name, tags].toString(), result[1]);
       }
 
       return result[1];
@@ -82,17 +88,22 @@ export class FlagbookClient {
   }
 
   private async waitForResponse(
-    request: QueueItemRequest
+    request: QueueItemRequest,
+    start: number = new Date().getTime()
   ): Promise<QueueItemResponse | undefined> {
+    if (new Date().getTime() - start > this.config.timeout) {
+      this.removeRequestFromQueue(request);
+    }
+
     const queueItem = this.findEnqueuedRequest(request);
 
-    if (!queueItem) return;
+    if (!queueItem) return ["error", "timeout"];
 
     const [_, response] = queueItem;
 
     if (!response) {
       await new Promise((r) => setTimeout(() => r(true), 10));
-      return this.waitForResponse(request);
+      return this.waitForResponse(request, start);
     }
 
     this.removeRequestFromQueue(request);
@@ -122,13 +133,15 @@ export class FlagbookClient {
     }
   }
 
-  findEnqueuedRequest(request: QueueItemRequest): QueueItem | undefined {
+  private findEnqueuedRequest(
+    request: QueueItemRequest
+  ): QueueItem | undefined {
     return this.queue.find(
       (item) => item[0][0] === request[0] && item[0][1] === request[1]
     );
   }
 
-  findEnqueuedRequestIndex(request: QueueItemRequest): number {
+  private findEnqueuedRequestIndex(request: QueueItemRequest): number {
     return this.queue.findIndex(
       (item) => item[0][0] === request[0] && item[0][1] === request[1]
     );

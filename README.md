@@ -13,23 +13,49 @@ Node 10 or higher.
 Install the package with:
 
 ```bash
-npm install @flagbook/flagbook-node
-```
-or
-```bash
+# npm
+npm i @flagbook/flagbook-node
+
+# yarn
 yarn add @flagbook/flagbook-node
 ```
 
-## Usage
+## Getting started
 
-Basic usage of global flag
+When the installation is completed, configure the client providing your **accessToken** (You can find it in [https://app.flagbook.sh/](https://app.flagbook.sh/))
 
 ```js
 const { Flagbook } = require('@flagbook/flagbook-node')
 
 Flagbook.init({
-  accessToken: 'XXX'
-})
+	// [Required] Your access token
+  accessToken: 'XXX',
 
-await Flagbook.getFlagValue('user_edit_v2_enabled') // true
+	// [Optional] Indicates whether the cache layer is enabled in the client. It's strongly recommended to keep this setting enabled. Default: true 
+	cacheEnabled: true,
+
+	// [Optional] Configures time to live in milliseconds of cache manager. Default: 10000
+	cacheTTL: 10_000,
+
+  // [Optional] Specifies the time within which the request to the Flagbook must be made, otherwise an exception is thrown. Default: 5000
+	timeout: 5_000,
+})
 ```
+
+You're done 🎉
+
+## Usage
+
+Retrieve global flag value:
+
+```js
+await Flagbook.getFlagValue('user_edit_view_v2_enabled') // true/false
+```
+
+Retrieve flag value for given tags:
+
+```js
+await Flagbook.getFlagValue('user_edit_view_v2_enabled', [['user_id', 1], ['country_code', 'us']]) // true/false
+```
+
+Please note that the order of the provided tags matters. The function will return the value assigned to the first found tag from the list.
