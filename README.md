@@ -28,17 +28,17 @@ When the installation is completed, configure the client providing your **access
 const { Flagbook } = require('@flagbook/flagbook-node')
 
 Flagbook.init({
-	// [Required] Your access token
+  // [Required] Your access token
   accessToken: 'XXX',
-
-	// [Optional] Indicates whether the cache layer is enabled in the client. It's strongly recommended to keep this setting enabled. Default: true 
-	cacheEnabled: true,
-
-	// [Optional] Configures time to live in milliseconds of cache manager. Default: 10000
-	cacheTTL: 10_000,
+  
+  // [Optional] Indicates whether the cache layer is enabled in the client. It's strongly recommended to keep this setting enabled. Default: true 
+  cacheEnabled: true,
+  
+  // [Optional] Configures time to live in milliseconds of cache manager. Default: 10000
+  cacheTTL: 10_000,
 
   // [Optional] Specifies the time within which the request to the Flagbook must be made, otherwise an exception is thrown. Default: 5000
-	timeout: 5_000,
+  timeout: 5_000,
 })
 ```
 
