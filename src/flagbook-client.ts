@@ -1,5 +1,6 @@
 import { CacheManager } from "./cache-manager";
 import { SocketClient } from "./socket-client";
+import { TraceReporter } from "./trace-reporter";
 
 export interface Config {
   accessToken: string;
@@ -33,6 +34,7 @@ export class FlagbookClient {
     timeout: 5_000,
   };
   private cacheManager: CacheManager;
+  private traceReporter: TraceReporter;
 
   constructor(config: Partial<Config>) {
     this.config = {
@@ -51,6 +53,8 @@ export class FlagbookClient {
         accessToken: this.config.accessToken,
         onMessage: this.onMessage,
       });
+      this.traceReporter = new TraceReporter(this.socketClient);
+      this.traceReporter.run();
     }
   }
 
@@ -58,6 +62,8 @@ export class FlagbookClient {
     if (!this.config.accessToken || this.config.accessToken === "empty") {
       throw new Error(`Cannot read flag, reason: access token not provided`);
     }
+
+    this.traceReporter.report(name);
 
     if (this.config.cacheEnabled) {
       const cachedValue = this.cacheManager.get([name, tags].toString());
