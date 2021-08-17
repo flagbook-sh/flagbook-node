@@ -1,6 +1,6 @@
 import { Config, FlagbookClient, Tag } from "./flagbook-client";
 
-global.flagbook = new FlagbookClient({ accessToken: undefined });
+global.flagbook = new FlagbookClient({ publicApiKey: undefined });
 
 export class Flagbook {
   public static init(config: Partial<Config>): void {

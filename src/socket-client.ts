@@ -1,7 +1,7 @@
 import WebSocket from "ws";
 
 interface ISocketClientConfig {
-  accessToken?: string;
+  publicApiKey?: string;
   baseUrl: string;
   retryInterval: number;
   onMessage?: (message: any) => void;
@@ -15,19 +15,19 @@ export class SocketClient {
   private ws: WebSocket;
 
   constructor({
-    accessToken,
+    publicApiKey,
     onMessage,
   }: {
-    accessToken: string;
+    publicApiKey: string;
     onMessage: (message: any) => void;
   }) {
-    this.config.accessToken = accessToken;
+    this.config.publicApiKey = publicApiKey;
     this.config.onMessage = onMessage;
     this.connect();
   }
 
   connect() {
-    this.ws = new WebSocket(this.config.baseUrl + this.config.accessToken);
+    this.ws = new WebSocket(this.config.baseUrl + this.config.publicApiKey);
     this.ws.on("message", this.onMsg);
     this.ws.on("error", this.onError);
     this.ws.on("close", this.onClose);

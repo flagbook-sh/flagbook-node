@@ -22,14 +22,14 @@ yarn add @flagbook/flagbook-node
 
 ## Getting started
 
-When the installation is completed, configure the client providing your **accessToken** (You can find it in [https://app.flagbook.sh/](https://app.flagbook.sh/))
+When the installation is completed, configure the client providing your **publicApiKey** (You can find it in [https://app.flagbook.sh/](https://app.flagbook.sh/))
 
 ```js
 const { Flagbook } = require('@flagbook/flagbook-node')
 
 Flagbook.init({
-  // [Required] Your access token
-  accessToken: 'XXX',
+  // [Required] Your publicApiKey
+  publicApiKey: 'XXX',
   
   // [Optional] Indicates whether the cache layer is enabled in the client. It's strongly recommended to keep this setting enabled. Default: true 
   cacheEnabled: true,

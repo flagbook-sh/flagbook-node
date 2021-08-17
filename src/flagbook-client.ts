@@ -3,7 +3,7 @@ import { SocketClient } from "./socket-client";
 import { TraceReporter } from "./trace-reporter";
 
 export interface Config {
-  accessToken: string;
+  publicApiKey: string;
   cacheTTL: number;
   cacheEnabled: boolean;
   timeout: number;
@@ -28,7 +28,7 @@ export class FlagbookClient {
   private socketClient: SocketClient;
   private queue: QueueItem[] = [];
   private config: Config = {
-    accessToken: "empty",
+    publicApiKey: "empty",
     cacheTTL: 10_000,
     cacheEnabled: true,
     timeout: 5_000,
@@ -48,9 +48,9 @@ export class FlagbookClient {
         : 1_000,
     });
 
-    if (this.config.accessToken) {
+    if (this.config.publicApiKey) {
       this.socketClient = new SocketClient({
-        accessToken: this.config.accessToken,
+        publicApiKey: this.config.publicApiKey,
         onMessage: this.onMessage,
       });
       this.traceReporter = new TraceReporter(this.socketClient);
@@ -59,8 +59,8 @@ export class FlagbookClient {
   }
 
   public async getFlagValue(name: string, tags: Tag[] = []): Promise<boolean> {
-    if (!this.config.accessToken || this.config.accessToken === "empty") {
-      throw new Error(`Cannot read flag, reason: access token not provided`);
+    if (!this.config.publicApiKey || this.config.publicApiKey === "empty") {
+      throw new Error(`Cannot read flag, reason: publicApiKey not provided`);
     }
 
     this.traceReporter.report(name);
